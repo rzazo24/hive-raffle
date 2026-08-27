@@ -1,6 +1,6 @@
-/* Mismos tokens de diseño que hive-scope (proyecto hermano), para que ambas
-   webs se sientan parte de la misma familia: fondo oscuro con degradado,
-   tarjetas "de cristal" (glassmorphism) y rojo/cian como colores de marca. */
+/* Same design tokens as hive-scope (sibling project), so both sites feel
+   like part of the same family: dark background with a gradient, "glass"
+   cards (glassmorphism), and red/cyan as brand colors. */
 :root {
   --bg: #090d16;
   --bg-gradient: radial-gradient(circle at 50% -20%, #1e1b4b 0%, #090d16 80%);
@@ -40,7 +40,7 @@ body {
   margin: 0 auto;
 }
 
-/* ---------- Barra superior: botón de idioma ---------- */
+/* ---------- Top bar: language button ---------- */
 
 .top-bar {
   display: flex;
@@ -68,7 +68,7 @@ body {
   box-shadow: 0 0 15px var(--primary-glow);
 }
 
-/* ---------- Cabecera / logo ---------- */
+/* ---------- Header / logo ---------- */
 
 header {
   text-align: center;
@@ -96,7 +96,7 @@ header {
   margin: 0 auto;
 }
 
-/* ---------- Pestañas ---------- */
+/* ---------- Tabs ---------- */
 
 .tabs {
   display: flex;
@@ -138,7 +138,7 @@ header {
   display: block;
 }
 
-/* ---------- Tarjetas ---------- */
+/* ---------- Cards ---------- */
 
 .card {
   background: var(--card-bg);
@@ -184,7 +184,7 @@ header {
   color: var(--text);
 }
 
-/* ---------- Formularios ---------- */
+/* ---------- Forms ---------- */
 
 form {
   display: flex;
@@ -252,8 +252,8 @@ button:disabled {
   box-shadow: none;
 }
 
-/* Botones secundarios (copiar, comprobar estado): más discretos que la
-   acción principal de cada tarjeta. */
+/* Secondary buttons (copy, check status): more subdued than the main
+   action of each card. */
 #btn-copiar-texto,
 #btn-actualizar-estado {
   background: rgba(56, 189, 248, 0.1);
@@ -279,7 +279,7 @@ button:disabled {
   color: var(--accent);
 }
 
-/* ---------- Resultados ---------- */
+/* ---------- Results ---------- */
 
 .resultado {
   margin-top: 18px;
@@ -349,7 +349,7 @@ code {
   word-break: break-all;
 }
 
-/* ---------- Pie de página ---------- */
+/* ---------- Footer ---------- */
 
 footer {
   text-align: center;

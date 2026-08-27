@@ -1,12 +1,12 @@
 // i18n.js
 //
-// Sistema de traducción muy simple, sin librerías externas: un diccionario
-// de textos por idioma, y unas pocas funciones para leerlo, guardarlo y
-// aplicarlo al HTML.
+// A very simple translation system, no external libraries: a dictionary of
+// texts per language, and a handful of functions to read it, store it, and
+// apply it to the HTML.
 //
-// Cómo funciona en el HTML: cualquier elemento con el atributo
-// data-i18n="miClave" mostrará translations[idioma].miClave como su texto.
-// Para placeholders de inputs se usa data-i18n-placeholder en su lugar.
+// How it works in the HTML: any element with the attribute
+// data-i18n="myKey" will show translations[lang].myKey as its text.
+// For input placeholders, data-i18n-placeholder is used instead.
 
 export const translations = {
   en: {
@@ -151,18 +151,18 @@ export const translations = {
 const STORAGE_KEY = 'hive-raffle-lang';
 const IDIOMA_POR_DEFECTO = 'en';
 
-// Lee el idioma guardado en este navegador, o 'en' si es la primera visita.
+// Reads the language stored in this browser, or 'en' on the first visit.
 export function getLang() {
   return localStorage.getItem(STORAGE_KEY) || IDIOMA_POR_DEFECTO;
 }
 
-// Guarda el idioma elegido para que se recuerde en la próxima visita.
+// Stores the chosen language so it's remembered on the next visit.
 export function setLang(lang) {
   localStorage.setItem(STORAGE_KEY, lang);
 }
 
-// Traduce una clave al idioma actual, sustituyendo variables tipo {nombre}
-// si se pasan. Ejemplo: t('resultParticipants', { count: 5 })
+// Translates a key into the current language, substituting {name}-style
+// variables if any are passed. Example: t('resultParticipants', { count: 5 })
 export function t(key, vars = {}) {
   const idioma = getLang();
   let texto = translations[idioma][key] ?? translations[IDIOMA_POR_DEFECTO][key] ?? key;
@@ -174,15 +174,15 @@ export function t(key, vars = {}) {
   return texto;
 }
 
-// Recorre todo el HTML y traduce los elementos marcados con data-i18n
-// (texto) y data-i18n-placeholder (placeholders de inputs).
+// Walks the whole HTML document and translates the elements marked with
+// data-i18n (text) and data-i18n-placeholder (input placeholders).
 export function applyStaticTranslations() {
   document.documentElement.lang = getLang();
 
-  // Usamos innerHTML (no textContent) porque algunas traducciones incluyen
-  // HTML sencillo, como el enlace del pie de página. Todas las traducciones
-  // están escritas a mano en este mismo archivo (no vienen de fuera), así
-  // que no hay riesgo de inyectar contenido de un tercero.
+  // We use innerHTML (not textContent) because some translations include
+  // simple HTML, like the footer link. All translations are hand-written
+  // in this same file (they don't come from outside), so there's no risk
+  // of injecting third-party content.
   document.querySelectorAll('[data-i18n]').forEach((el) => {
     el.innerHTML = t(el.dataset.i18n);
   });

@@ -1,70 +1,70 @@
 // raffle.js
 //
-// Lógica "pura" del sorteo: estas funciones NO hacen peticiones de red,
-// solo transforman los datos que les pasamos. Al ser puras (mismos datos
-// de entrada -> siempre el mismo resultado), son la parte más fácil de
-// confiar y de verificar de todo el proyecto.
+// "Pure" raffle logic: these functions do NOT make network requests, they
+// only transform the data we pass them. Being pure (same input data ->
+// always the same result) makes this the easiest part of the whole
+// project to trust and to verify.
 //
-// Esta es la razón por la que el modo "crear sorteo" y el modo "verificar"
-// SIEMPRE dan el mismo resultado: ambos llaman exactamente a esta misma
-// función, computeRaffle().
+// This is why the "create raffle" mode and the "verify" mode ALWAYS give
+// the same result: both call this exact same function, computeRaffle().
 
-// De la lista de respuestas de Hive, extrae los autores únicos (participantes).
-// Si alguien comenta varias veces, solo cuenta una vez.
+// From the list of Hive replies, extracts the unique authors (participants).
+// If someone comments more than once, they only count once.
 export function extractParticipants(replies) {
-  const autores = replies.map((reply) => reply.author);
-  const unicos = [...new Set(autores)];
-  // Orden alfabético: así el orden de la lista es siempre el mismo,
-  // sin depender del orden en que la API haya devuelto los comentarios.
-  return unicos.sort();
+  const authors = replies.map((reply) => reply.author);
+  const unique = [...new Set(authors)];
+  // Alphabetical order: this way the list order is always the same,
+  // regardless of the order the API returned the comments in.
+  return unique.sort();
 }
 
-// Calcula el hash SHA-256 de un texto usando la Web Crypto API del navegador.
-// Un hash es una "huella digital": el mismo texto siempre da el mismo hash,
-// pero es imposible predecir el hash sin calcularlo, y un cambio mínimo en
-// el texto de entrada da un hash completamente distinto.
-export async function sha256Hex(texto) {
-  const bytesDeEntrada = new TextEncoder().encode(texto);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', bytesDeEntrada);
+// Computes the SHA-256 hash of a text using the browser's Web Crypto API.
+// A hash is a "digital fingerprint": the same text always produces the same
+// hash, but it's impossible to predict the hash without computing it, and a
+// tiny change in the input text gives a completely different hash.
+export async function sha256Hex(text) {
+  const inputBytes = new TextEncoder().encode(text);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', inputBytes);
   const hashBytes = Array.from(new Uint8Array(hashBuffer));
   return hashBytes.map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
-// A partir del block_id (nuestra "semilla" aleatoria verificable) y el
-// número de participantes, calcula de forma determinista qué índice gana.
-export async function pickWinnerIndex(blockId, totalParticipantes) {
-  if (totalParticipantes <= 0) {
-    // Este archivo es lógica pura y no depende del sistema de idiomas (i18n.js),
-    // así que este mensaje interno se deja en inglés como idioma por defecto.
+// From the block_id (our verifiable random "seed") and the number of
+// participants, deterministically computes which index wins.
+export async function pickWinnerIndex(blockId, totalParticipants) {
+  if (totalParticipants <= 0) {
+    // This file is pure logic and doesn't depend on the i18n system
+    // (i18n.js), so this internal message is left in English as the
+    // default language.
     throw new Error('No participants to draw from.');
   }
 
   const hashHex = await sha256Hex(blockId);
 
-  // Un hash SHA-256 es un número enorme (256 bits), demasiado grande para
-  // el tipo "number" normal de JavaScript. Por eso usamos BigInt, que puede
-  // representar enteros de cualquier tamaño.
-  const hashComoNumeroGrande = BigInt('0x' + hashHex);
+  // A SHA-256 hash is a huge number (256 bits), too big for JavaScript's
+  // regular "number" type. That's why we use BigInt, which can represent
+  // integers of any size.
+  const hashAsBigNumber = BigInt('0x' + hashHex);
 
-  // El resto de la división (%) por el número de participantes nos da
-  // un índice válido dentro de la lista, repartido de forma uniforme.
-  const indice = hashComoNumeroGrande % BigInt(totalParticipantes);
+  // The remainder of the division (%) by the number of participants gives
+  // us a valid index into the list, distributed uniformly.
+  const index = hashAsBigNumber % BigInt(totalParticipants);
 
-  return Number(indice);
+  return Number(index);
 }
 
-// Función principal del sorteo. Recibe los datos ya obtenidos de Hive
-// (replies y block) y devuelve el resultado completo.
+// Main raffle function. Receives data already fetched from Hive (replies
+// and block) and returns the full result.
 export async function computeRaffle({ replies, block }) {
-  const participantes = extractParticipants(replies);
+  const participants = extractParticipants(replies);
   const blockId = block.block_id;
-  const indiceGanador = await pickWinnerIndex(blockId, participantes.length);
-  const ganador = participantes[indiceGanador];
+  const winnerIndex = await pickWinnerIndex(blockId, participants.length);
+  const winner = participants[winnerIndex];
 
   return {
-    participantes,
+    participantes: participants,
     blockId,
-    indiceGanador,
-    ganador,
+    indiceGanador: winnerIndex,
+    ganador: winner,
   };
 }

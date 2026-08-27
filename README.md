@@ -7,45 +7,45 @@
 ![Hive](https://img.shields.io/badge/blockchain-Hive-red)
 ![Status](https://img.shields.io/badge/status-in%20development-yellow)
 
-Sorteos verificables usando la blockchain de Hive como fuente de aleatoriedad.
+Verifiable raffles using the Hive blockchain as a source of randomness.
 
-En vez de confiar en un `Math.random()` que nadie puede comprobar, este
-proyecto usa el `block_id` de un bloque futuro de Hive como semilla: nadie
-puede predecirlo de antemano, así que nadie puede manipular el resultado —
-y cualquiera puede recalcularlo después para comprobar que es legítimo.
+Instead of relying on a `Math.random()` that nobody can check, this project
+uses the `block_id` of a future Hive block as the seed: nobody can predict it
+in advance, so nobody can manipulate the result — and anyone can recompute it
+afterwards to confirm it's legitimate.
 
-## Cómo funciona
+## How it works
 
-1. **Participantes**: se toman los autores de los comentarios de primer
-   nivel a un post de Hive (`author` + `permlink`).
-2. **Semilla**: se fija un número de bloque futuro de Hive y se anuncia
-   públicamente antes de que ese bloque exista.
-3. **Ganador**: cuando el bloque ya existe, se aplica SHA-256 sobre su
-   `block_id` y el resultado (interpretado como número) decide el índice
-   ganador dentro de la lista de participantes.
-4. **Verificación**: cualquiera puede introducir el mismo `author`,
-   `permlink` y número de bloque en la pestaña "Verificar sorteo" y
-   comprobar que obtiene el mismo ganador.
+1. **Participants**: the authors of the top-level comments on a Hive post
+   (`author` + `permlink`) become the entrants.
+2. **Seed**: a future Hive block number is committed to and announced
+   publicly before that block exists.
+3. **Winner**: once the block exists, SHA-256 is applied to its `block_id`,
+   and the result (interpreted as a number) decides the winning index within
+   the list of participants.
+4. **Verification**: anyone can enter the same `author`, `permlink`, and
+   block number in the "Verify raffle" tab and confirm they get the same
+   winner.
 
-## Desarrollo local
+## Local development
 
-Este proyecto no tiene build step, pero usa módulos ES
-(`<script type="module">`), que **no funcionan abriendo `index.html` con
-doble clic**. Sirve el directorio con un servidor local, por ejemplo:
+This project has no build step, but it uses ES modules
+(`<script type="module">`), which **do not work by double-clicking
+`index.html`**. Serve the directory with a local server, for example:
 
 ```bash
 python -m http.server 8000
 ```
 
-y abre `http://localhost:8000`.
+and open `http://localhost:8000`.
 
-## Despliegue
+## Deployment
 
-Sitio 100% estático: se puede desplegar directamente en GitHub Pages o
-Netlify sin configuración adicional.
+A fully static site: it can be deployed directly to GitHub Pages or Netlify
+with no extra configuration.
 
 ## Stack
 
-- HTML / CSS / JavaScript vanilla (sin frameworks, sin bundler).
-- API RPC pública de Hive (`https://api.hive.blog`, con fallback).
-- Web Crypto API nativa del navegador para SHA-256.
+- Vanilla HTML / CSS / JavaScript (no frameworks, no bundler).
+- Hive's public RPC API (`https://api.hive.blog`, with a fallback node).
+- The browser's native Web Crypto API for SHA-256.
