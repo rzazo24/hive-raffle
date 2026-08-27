@@ -1,6 +1,7 @@
 # hive-raffle
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Website](https://img.shields.io/website?url=https%3A%2F%2Fhive-raffle.vercel.app%2F)
 ![Last Commit](https://img.shields.io/github/last-commit/rzazo24/hive-raffle)
 ![Issues](https://img.shields.io/github/issues/rzazo24/hive-raffle)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)
@@ -8,6 +9,8 @@
 ![Status](https://img.shields.io/badge/status-in%20development-yellow)
 
 Verifiable raffles using the Hive blockchain as a source of randomness.
+
+🔗 Live: [hive-raffle.vercel.app](https://hive-raffle.vercel.app/)
 
 Instead of relying on a `Math.random()` that nobody can check, this project
 uses the `block_id` of a future Hive block as the seed: nobody can predict it
@@ -41,8 +44,9 @@ and open `http://localhost:8000`.
 
 ## Deployment
 
-A fully static site: it can be deployed directly to GitHub Pages or Netlify
-with no extra configuration.
+A fully static site, currently deployed on [Vercel](https://vercel.com)
+(auto-deployed from the `main` branch), but it works just as well on GitHub
+Pages, Netlify, or any static host — no extra configuration needed.
 
 ## Stack
 
