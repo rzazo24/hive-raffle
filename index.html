@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hive Raffle — Verifiable raffles on Hive</title>
+
+  <!-- Mismas fuentes que hive-scope, para mantener la identidad visual -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="container">
+    <div class="top-bar">
+      <button type="button" id="lang-btn" class="lang-btn">
+        <span id="lang-flag">🇬🇧</span> <span id="lang-label">EN</span>
+      </button>
+    </div>
+
+    <header>
+      <div class="logo-container">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 100" width="252" height="46">
+          <defs>
+            <style>
+              .mark { fill: #e31337; }
+              .txt-hive { font-family: 'Inter', system-ui, -apple-system, sans-serif; font-weight: 800; fill: #e31337; }
+              .txt-raffle { font-family: 'Inter', system-ui, -apple-system, sans-serif; font-weight: 800; fill: #38bdf8; }
+              .die-ring { fill: none; stroke: #38bdf8; stroke-width: 7; }
+              .die-bg { fill: #090d16; opacity: 0.55; }
+              .die-dot { fill: #38bdf8; }
+            </style>
+          </defs>
+
+          <!-- Diamante de Hive (mismo símbolo que hive-scope) -->
+          <g transform="translate(0, 5) scale(0.42)">
+            <path class="mark" d="M157.27,107.26a1,1,0,0,1,.82,1.42l-46.75,80.85a1,1,0,0,1-.82.47H81.94a.94.94,0,0,1-.81-1.42l46.75-80.85a.94.94,0,0,1,.81-.47ZM129.48,84.09a1,1,0,0,1-.82-.47L81.13,1.42A.94.94,0,0,1,81.94,0h28.58a1,1,0,0,1,.82.47l47.53,82.2a.94.94,0,0,1-.81,1.42Z"/>
+            <path class="mark" d="M135.13,1.42A.94.94,0,0,1,136,0h28.62a.93.93,0,0,1,.81.47l54.49,94.06a.93.93,0,0,1,0,.94l-54.49,94.06a.93.93,0,0,1-.81.47H136a.94.94,0,0,1-.82-1.42L189.34,95Zm-23.26,93.1a1,1,0,0,1,0,1L57.13,189.53a1,1,0,0,1-1.65,0L.13,95.48a1,1,0,0,1,0-1L54.87.47a1,1,0,0,1,1.65,0Z"/>
+          </g>
+
+          <!-- Dado superpuesto, simbolizando "sorteo" (en vez de la lupa de hive-scope) -->
+          <g>
+            <rect class="die-bg" x="46" y="42" width="44" height="44" rx="10"/>
+            <rect class="die-ring" x="46" y="42" width="44" height="44" rx="10"/>
+            <circle class="die-dot" cx="58" cy="54" r="4.3"/>
+            <circle class="die-dot" cx="78" cy="54" r="4.3"/>
+            <circle class="die-dot" cx="68" cy="64" r="4.3"/>
+            <circle class="die-dot" cx="58" cy="74" r="4.3"/>
+            <circle class="die-dot" cx="78" cy="74" r="4.3"/>
+          </g>
+
+          <!-- Texto: HIVE en rojo + RAFFLE en cian, igual que hive-scope -->
+          <text x="115" y="68" font-size="54" letter-spacing="1">
+            <tspan class="txt-hive">HIVE</tspan>
+            <tspan class="txt-raffle" dx="4">RAFFLE</tspan>
+          </text>
+        </svg>
+      </div>
+      <p class="subtitle-neon" data-i18n="appSubtitle">
+        Verifiable raffles using the Hive blockchain as a source of randomness.
+      </p>
+    </header>
+
+    <nav class="tabs">
+      <button class="tab-btn active" data-tab="crear" data-i18n="tabCreate">Create raffle</button>
+      <button class="tab-btn" data-tab="verificar" data-i18n="tabVerify">Verify raffle</button>
+    </nav>
+
+    <!-- ============ TAB: CREATE RAFFLE ============ -->
+    <section id="tab-crear" class="tab-panel active">
+
+      <div class="card">
+        <h2 data-i18n="step1Title">Step 1 — Configure the raffle</h2>
+        <p class="help" data-i18n="step1Help">
+          Enter the post whose comments will be the participants. This tool will suggest a
+          future Hive block as the raffle's seed: since nobody can predict the contents of a
+          block that doesn't exist yet, nobody can manipulate the result — not even you.
+        </p>
+
+        <form id="form-configurar">
+          <label>
+            <span data-i18n="labelAuthor">Post author</span>
+            <input type="text" id="config-author" data-i18n-placeholder="placeholderAuthor" placeholder="e.g. hiveio" required />
+          </label>
+          <label>
+            <span data-i18n="labelPermlink">Post permlink</span>
+            <input type="text" id="config-permlink" data-i18n-placeholder="placeholderPermlink" placeholder="e.g. my-raffle-post" required />
+          </label>
+          <button type="submit" data-i18n="btnSuggestBlock">Suggest future block</button>
+        </form>
+
+        <div id="config-resultado" class="hidden">
+          <label>
+            <span data-i18n="labelBlockNum">Target block (you can edit it, but it must be in the future)</span>
+            <input type="number" id="config-blocknum" />
+          </label>
+
+          <p class="help" data-i18n="commitHelp">
+            Publish this text publicly (for example as a comment on your own post) before that
+            block arrives, so everyone knows in advance which block will decide the raffle:
+          </p>
+          <textarea id="config-texto" rows="3" readonly></textarea>
+          <button type="button" id="btn-copiar-texto" data-i18n="btnCopyText">📋 Copy text</button>
+
+          <p id="config-estado" class="estado"></p>
+          <button type="button" id="btn-actualizar-estado" data-i18n="btnCheckStatus">🔄 Check if the raffle can run yet</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 data-i18n="step2Title">Step 2 — Draw</h2>
+        <p class="help" data-i18n="step2Help">Available as soon as the target block exists and is irreversible.</p>
+        <button type="button" id="btn-sortear" disabled data-i18n="btnDraw">🎉 Draw now</button>
+        <div id="resultado-crear" class="resultado hidden"></div>
+      </div>
+
+    </section>
+
+    <!-- ============ TAB: VERIFY RAFFLE ============ -->
+    <section id="tab-verificar" class="tab-panel">
+
+      <div class="card">
+        <h2 data-i18n="verifyTitle">Verify a past raffle</h2>
+        <p class="help" data-i18n="verifyHelp">
+          Enter the same data the organizer used (author, permlink and block number) and this
+          tool will recompute the result from scratch. If it matches the announced winner, the
+          raffle was legitimate.
+        </p>
+
+        <form id="form-verificar">
+          <label>
+            <span data-i18n="labelAuthor">Post author</span>
+            <input type="text" id="verify-author" data-i18n-placeholder="placeholderAuthor" placeholder="e.g. hiveio" required />
+          </label>
+          <label>
+            <span data-i18n="labelPermlink">Post permlink</span>
+            <input type="text" id="verify-permlink" data-i18n-placeholder="placeholderPermlink" placeholder="e.g. my-raffle-post" required />
+          </label>
+          <label>
+            <span data-i18n="labelBlockNumSeed">Block number used as the seed</span>
+            <input type="number" id="verify-blocknum" required />
+          </label>
+          <label>
+            <span data-i18n="labelAnnouncedWinner">Announced winner (optional, for automatic comparison)</span>
+            <input type="text" id="verify-ganador-anunciado" data-i18n-placeholder="placeholderAnnouncedWinner" placeholder="e.g. some-user" />
+          </label>
+          <button type="submit" data-i18n="btnVerify">🔍 Verify</button>
+        </form>
+
+        <div id="resultado-verificar" class="resultado hidden"></div>
+      </div>
+
+    </section>
+
+    <footer>
+      <p data-i18n="footerText">
+        Open source · No backend · Data is read directly from the public Hive API (<code>api.hive.blog</code>).
+      </p>
+      <p data-i18n="footerMadeBy">
+        Made with <span class="heart">❤️</span> by <a href="https://peakd.com/@rzazo24" target="_blank" rel="noopener">@rzazo24</a>
+      </p>
+    </footer>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
