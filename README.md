@@ -12,6 +12,8 @@ Verifiable raffles using the Hive blockchain as a source of randomness.
 
 🔗 Live: [hive-raffle.vercel.app](https://hive-raffle.vercel.app/)
 
+![hive-raffle screenshot](./assets/screenshot-home.png)
+
 Instead of relying on a `Math.random()` that nobody can check, this project
 uses the `block_id` of a future Hive block as the seed: nobody can predict it
 in advance, so nobody can manipulate the result — and anyone can recompute it
