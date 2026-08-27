@@ -10,8 +10,8 @@
 // keep the last computed data around so we can "repaint" it in the new
 // language without having to ask Hive for it again.
 
-import { getContentReplies, getBlock, getDynamicGlobalProperties } from './hive-api.js';
-import { computeRaffle, filterRepliesByDeadline } from './raffle.js';
+import { getContentReplies, getBlock, getDynamicGlobalProperties, getActiveVotes } from './hive-api.js';
+import { computeRaffle, filterRepliesByDeadline, filterRepliesByVoters } from './raffle.js';
 import { t, getLang, setLang, applyStaticTranslations } from './i18n.js';
 
 // How many new blocks to add when suggesting a "future block" for the raffle.
@@ -90,6 +90,7 @@ async function handleConfigurar(evento) {
   const author = document.getElementById('config-author').value.trim();
   const permlink = document.getElementById('config-permlink').value.trim();
   const deadline = deadlineInputToIso(document.getElementById('config-deadline'));
+  const requireVoter = document.getElementById('config-require-voter').checked;
 
   const boton = evento.target.querySelector('button');
   boton.disabled = true;
@@ -99,7 +100,7 @@ async function handleConfigurar(evento) {
     const props = await getDynamicGlobalProperties();
     const blockNumSugerido = props.head_block_number + BLOQUES_DE_MARGEN;
 
-    sorteoEnCurso = { author, permlink, blockNum: blockNumSugerido, deadline };
+    sorteoEnCurso = { author, permlink, blockNum: blockNumSugerido, deadline, requireVoter };
 
     document.getElementById('config-blocknum').value = blockNumSugerido;
     document.getElementById('config-resultado').classList.remove('hidden');
@@ -116,11 +117,14 @@ async function handleConfigurar(evento) {
 
 function actualizarTextoDeCompromiso() {
   const blockNum = document.getElementById('config-blocknum').value;
-  const { author, permlink, deadline } = sorteoEnCurso;
+  const { author, permlink, deadline, requireVoter } = sorteoEnCurso;
 
   let texto = t('commitText', { author, permlink, blockNum });
   if (deadline) {
     texto += '\n' + t('commitDeadlineLine', { deadline });
+  }
+  if (requireVoter) {
+    texto += '\n' + t('commitVoterLine');
   }
 
   document.getElementById('config-texto').value = texto;
@@ -176,10 +180,10 @@ async function handleSortear() {
   boton.textContent = t('btnDrawLoading');
 
   try {
-    const { author, permlink, blockNum, deadline } = sorteoEnCurso;
-    const resultado = await ejecutarSorteo(author, permlink, blockNum, deadline);
+    const { author, permlink, blockNum, deadline, requireVoter } = sorteoEnCurso;
+    const resultado = await ejecutarSorteo(author, permlink, blockNum, deadline, requireVoter);
 
-    mostrarResultado('resultado-crear', { author, permlink, blockNum, deadline, ...resultado });
+    mostrarResultado('resultado-crear', { author, permlink, blockNum, deadline, requireVoter, ...resultado });
   } catch (err) {
     alert(t('errDrawFailed', { msg: err.message }));
   } finally {
@@ -197,6 +201,7 @@ async function handleVerificar(evento) {
   const permlink = document.getElementById('verify-permlink').value.trim();
   const blockNum = Number(document.getElementById('verify-blocknum').value);
   const deadline = deadlineInputToIso(document.getElementById('verify-deadline'));
+  const requireVoter = document.getElementById('verify-require-voter').checked;
   const ganadorAnunciado = document.getElementById('verify-ganador-anunciado').value.trim();
 
   const boton = evento.target.querySelector('button');
@@ -204,13 +209,14 @@ async function handleVerificar(evento) {
   boton.textContent = t('btnVerifyLoading');
 
   try {
-    const resultado = await ejecutarSorteo(author, permlink, blockNum, deadline);
+    const resultado = await ejecutarSorteo(author, permlink, blockNum, deadline, requireVoter);
 
     mostrarResultado('resultado-verificar', {
       author,
       permlink,
       blockNum,
       deadline,
+      requireVoter,
       ganadorAnunciado: ganadorAnunciado || null,
       ...resultado,
     });
@@ -225,17 +231,21 @@ async function handleVerificar(evento) {
 // Shared function: fetches the Hive data needed and computes the raffle.
 // Used by BOTH "Draw now" and "Verify", to guarantee both paths do
 // exactly the same thing.
-async function ejecutarSorteo(author, permlink, blockNum, deadline) {
-  const [replies, block] = await Promise.all([
+async function ejecutarSorteo(author, permlink, blockNum, deadline, requireVoter) {
+  const [replies, block, votes] = await Promise.all([
     getContentReplies(author, permlink),
     getBlock(blockNum),
+    requireVoter ? getActiveVotes(author, permlink) : Promise.resolve(null),
   ]);
 
   if (!block) {
     throw new Error(t('errBlockNotExist', { blockNum }));
   }
 
-  const validReplies = filterRepliesByDeadline(replies, deadline);
+  let validReplies = filterRepliesByDeadline(replies, deadline);
+  if (requireVoter) {
+    validReplies = filterRepliesByVoters(validReplies, votes);
+  }
 
   return computeRaffle({ replies: validReplies, block });
 }
@@ -252,7 +262,7 @@ function mostrarResultado(elementId, datos) {
 }
 
 function pintarResultado(elementId, datos) {
-  const { author, permlink, blockNum, deadline, blockId, participantes, ganador, ganadorAnunciado } = datos;
+  const { author, permlink, blockNum, deadline, requireVoter, blockId, participantes, ganador, ganadorAnunciado } = datos;
 
   const contenedor = document.getElementById(elementId);
   contenedor.classList.remove('hidden');
@@ -268,12 +278,14 @@ function pintarResultado(elementId, datos) {
   const deadlineHtml = deadline
     ? `<p><strong>${t('resultDeadline')}</strong> ${deadline}</p>`
     : '';
+  const requireVoterHtml = requireVoter ? `<p>${t('resultRequireVoter')}</p>` : '';
 
   contenedor.innerHTML = `
     <h3>${t('resultTitle')}</h3>
     <p><strong>${t('resultPost')}</strong> @${author}/${permlink}</p>
     <p><strong>${t('resultBlockUsed')}</strong> #${blockNum}</p>
     ${deadlineHtml}
+    ${requireVoterHtml}
     <p><strong>${t('resultBlockId')}</strong> <code>${blockId}</code></p>
     <p><strong>${t('resultParticipants', { count: participantes.length })}</strong></p>
     <details>

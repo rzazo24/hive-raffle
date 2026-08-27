@@ -97,6 +97,10 @@
             Comments posted after this UTC time won't count as entries. Leave it empty to count
             every comment that exists at the moment you draw.
           </p>
+          <label class="checkbox-label">
+            <input type="checkbox" id="config-require-voter" />
+            <span data-i18n="labelRequireVoter">Require participants to have upvoted the post</span>
+          </label>
           <button type="submit" data-i18n="btnSuggestBlock">Suggest future block</button>
         </form>
 
@@ -154,6 +158,10 @@
           <label>
             <span data-i18n="labelDeadline">Entry deadline in UTC (optional)</span>
             <input type="datetime-local" id="verify-deadline" />
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="verify-require-voter" />
+            <span data-i18n="labelRequireVoter">Require participants to have upvoted the post</span>
           </label>
           <label>
             <span data-i18n="labelAnnouncedWinner">Announced winner (optional, for automatic comparison)</span>

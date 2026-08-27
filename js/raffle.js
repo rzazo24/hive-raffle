@@ -25,6 +25,14 @@ export function filterRepliesByDeadline(replies, deadlineIso) {
   });
 }
 
+// Keeps only the replies whose author also upvoted the post. `votes` is the
+// raw result of getActiveVotes(); a negative "percent" means a downvote, so
+// those don't count as support for the post.
+export function filterRepliesByVoters(replies, votes) {
+  const upvoters = new Set(votes.filter((v) => v.percent > 0).map((v) => v.voter));
+  return replies.filter((reply) => upvoters.has(reply.author));
+}
+
 // From the list of Hive replies, extracts the unique authors (participants).
 // If someone comments more than once, they only count once.
 export function extractParticipants(replies) {

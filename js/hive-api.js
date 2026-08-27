@@ -58,6 +58,12 @@ export async function getBlock(blockNum) {
   return rpcCall('condenser_api.get_block', [blockNum]);
 }
 
+// Returns the list of votes on a post, including who voted ("voter") and
+// how strongly (a negative "percent" means a downvote).
+export async function getActiveVotes(author, permlink) {
+  return rpcCall('condenser_api.get_active_votes', [author, permlink]);
+}
+
 // Returns the blockchain's global properties right now:
 // head_block_number (the most recent block that exists) and
 // last_irreversible_block_num (the last block that can no longer change,

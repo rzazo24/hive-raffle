@@ -31,6 +31,7 @@ export const translations = {
     deadlineHelp:
       'Comments posted after this UTC time won\'t count as entries. Leave it empty to count ' +
       'every comment that exists at the moment you draw.',
+    labelRequireVoter: 'Require participants to have upvoted the post',
     commitHelp:
       'Publish this text publicly (for example as a comment on your own post) ' +
       'before that block arrives, so everyone knows in advance which block will decide the raffle:',
@@ -61,11 +62,13 @@ export const translations = {
       'Will be resolved using Hive block #{blockNum}.\n' +
       'Verify it yourself at: hive-raffle ("Verify raffle" tab)',
     commitDeadlineLine: 'Entries after {deadline} UTC will not count.',
+    commitVoterLine: 'You must have upvoted the post to be counted as a participant.',
 
     resultTitle: 'Result',
     resultPost: 'Post:',
     resultBlockUsed: 'Block used as seed:',
     resultDeadline: 'Entry deadline (UTC):',
+    resultRequireVoter: 'Upvote required: yes',
     resultBlockId: 'block_id:',
     resultParticipants: 'Participants ({count}):',
     resultSeeList: 'See full list',
@@ -106,6 +109,7 @@ export const translations = {
     deadlineHelp:
       'Los comentarios publicados después de esta hora UTC no contarán como participaciones. ' +
       'Déjalo en blanco para contar todos los comentarios que existan en el momento de sortear.',
+    labelRequireVoter: 'Exigir que los participantes hayan votado el post',
     commitHelp:
       'Publica este texto públicamente (por ejemplo, como comentario en tu propio post) ' +
       'antes de que llegue ese bloque, para que todo el mundo sepa de antemano qué bloque decidirá el sorteo:',
@@ -136,11 +140,13 @@ export const translations = {
       'Se resolverá usando el bloque de Hive #{blockNum}.\n' +
       'Verifícalo tú mismo en: hive-raffle (pestaña "Verificar sorteo")',
     commitDeadlineLine: 'Los comentarios posteriores a {deadline} UTC no contarán.',
+    commitVoterLine: 'Debes haber votado el post para contar como participante.',
 
     resultTitle: 'Resultado',
     resultPost: 'Post:',
     resultBlockUsed: 'Bloque usado como semilla:',
     resultDeadline: 'Fecha límite de participación (UTC):',
+    resultRequireVoter: 'Voto requerido: sí',
     resultBlockId: 'block_id:',
     resultParticipants: 'Participantes ({count}):',
     resultSeeList: 'Ver lista completa',
