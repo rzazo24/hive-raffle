@@ -89,6 +89,14 @@
             <span data-i18n="labelPermlink">Post permlink</span>
             <input type="text" id="config-permlink" data-i18n-placeholder="placeholderPermlink" placeholder="e.g. my-raffle-post" required />
           </label>
+          <label>
+            <span data-i18n="labelDeadline">Entry deadline in UTC (optional)</span>
+            <input type="datetime-local" id="config-deadline" />
+          </label>
+          <p class="help" data-i18n="deadlineHelp">
+            Comments posted after this UTC time won't count as entries. Leave it empty to count
+            every comment that exists at the moment you draw.
+          </p>
           <button type="submit" data-i18n="btnSuggestBlock">Suggest future block</button>
         </form>
 
@@ -142,6 +150,10 @@
           <label>
             <span data-i18n="labelBlockNumSeed">Block number used as the seed</span>
             <input type="number" id="verify-blocknum" required />
+          </label>
+          <label>
+            <span data-i18n="labelDeadline">Entry deadline in UTC (optional)</span>
+            <input type="datetime-local" id="verify-deadline" />
           </label>
           <label>
             <span data-i18n="labelAnnouncedWinner">Announced winner (optional, for automatic comparison)</span>

@@ -8,6 +8,23 @@
 // This is why the "create raffle" mode and the "verify" mode ALWAYS give
 // the same result: both call this exact same function, computeRaffle().
 
+// Removes replies posted after the given deadline, so late entries don't
+// count as participants. deadlineIso is a UTC ISO string like
+// "2026-08-28T20:00:00Z"; pass a falsy value to skip filtering entirely
+// (every reply counts, which is the default behavior).
+export function filterRepliesByDeadline(replies, deadlineIso) {
+  if (!deadlineIso) return replies;
+
+  const deadline = new Date(deadlineIso).getTime();
+
+  return replies.filter((reply) => {
+    // Hive's "created" timestamps are UTC but come without a "Z" suffix
+    // (e.g. "2026-08-27T05:35:57"), so we add it before parsing.
+    const createdAt = new Date(reply.created + 'Z').getTime();
+    return createdAt <= deadline;
+  });
+}
+
 // From the list of Hive replies, extracts the unique authors (participants).
 // If someone comments more than once, they only count once.
 export function extractParticipants(replies) {

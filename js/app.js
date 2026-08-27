@@ -11,7 +11,7 @@
 // language without having to ask Hive for it again.
 
 import { getContentReplies, getBlock, getDynamicGlobalProperties } from './hive-api.js';
-import { computeRaffle } from './raffle.js';
+import { computeRaffle, filterRepliesByDeadline } from './raffle.js';
 import { t, getLang, setLang, applyStaticTranslations } from './i18n.js';
 
 // How many new blocks to add when suggesting a "future block" for the raffle.
@@ -26,6 +26,15 @@ const SEGUNDOS_POR_BLOQUE = 3;
 let sorteoEnCurso = null; // { author, permlink, blockNum } of the raffle being configured
 let ultimoEstadoBloque = null; // latest "can we draw yet?" result
 let ultimoResultado = { crear: null, verificar: null }; // latest computed results
+
+// Converts an <input type="datetime-local"> value (e.g. "2026-08-28T20:00")
+// into a UTC ISO string (e.g. "2026-08-28T20:00:00Z"). We treat the typed
+// value as UTC directly, not as the browser's local timezone — this way the
+// deadline means the exact same instant for the organizer and for every
+// verifier, no matter where they are.
+function deadlineInputToIso(inputEl) {
+  return inputEl.value ? `${inputEl.value}:00Z` : null;
+}
 
 // ---------- Language ----------
 
@@ -80,6 +89,7 @@ async function handleConfigurar(evento) {
 
   const author = document.getElementById('config-author').value.trim();
   const permlink = document.getElementById('config-permlink').value.trim();
+  const deadline = deadlineInputToIso(document.getElementById('config-deadline'));
 
   const boton = evento.target.querySelector('button');
   boton.disabled = true;
@@ -89,7 +99,7 @@ async function handleConfigurar(evento) {
     const props = await getDynamicGlobalProperties();
     const blockNumSugerido = props.head_block_number + BLOQUES_DE_MARGEN;
 
-    sorteoEnCurso = { author, permlink, blockNum: blockNumSugerido };
+    sorteoEnCurso = { author, permlink, blockNum: blockNumSugerido, deadline };
 
     document.getElementById('config-blocknum').value = blockNumSugerido;
     document.getElementById('config-resultado').classList.remove('hidden');
@@ -106,9 +116,14 @@ async function handleConfigurar(evento) {
 
 function actualizarTextoDeCompromiso() {
   const blockNum = document.getElementById('config-blocknum').value;
-  const { author, permlink } = sorteoEnCurso;
+  const { author, permlink, deadline } = sorteoEnCurso;
 
-  document.getElementById('config-texto').value = t('commitText', { author, permlink, blockNum });
+  let texto = t('commitText', { author, permlink, blockNum });
+  if (deadline) {
+    texto += '\n' + t('commitDeadlineLine', { deadline });
+  }
+
+  document.getElementById('config-texto').value = texto;
 }
 
 async function actualizarEstadoBloque() {
@@ -161,10 +176,10 @@ async function handleSortear() {
   boton.textContent = t('btnDrawLoading');
 
   try {
-    const { author, permlink, blockNum } = sorteoEnCurso;
-    const resultado = await ejecutarSorteo(author, permlink, blockNum);
+    const { author, permlink, blockNum, deadline } = sorteoEnCurso;
+    const resultado = await ejecutarSorteo(author, permlink, blockNum, deadline);
 
-    mostrarResultado('resultado-crear', { author, permlink, blockNum, ...resultado });
+    mostrarResultado('resultado-crear', { author, permlink, blockNum, deadline, ...resultado });
   } catch (err) {
     alert(t('errDrawFailed', { msg: err.message }));
   } finally {
@@ -181,6 +196,7 @@ async function handleVerificar(evento) {
   const author = document.getElementById('verify-author').value.trim();
   const permlink = document.getElementById('verify-permlink').value.trim();
   const blockNum = Number(document.getElementById('verify-blocknum').value);
+  const deadline = deadlineInputToIso(document.getElementById('verify-deadline'));
   const ganadorAnunciado = document.getElementById('verify-ganador-anunciado').value.trim();
 
   const boton = evento.target.querySelector('button');
@@ -188,12 +204,13 @@ async function handleVerificar(evento) {
   boton.textContent = t('btnVerifyLoading');
 
   try {
-    const resultado = await ejecutarSorteo(author, permlink, blockNum);
+    const resultado = await ejecutarSorteo(author, permlink, blockNum, deadline);
 
     mostrarResultado('resultado-verificar', {
       author,
       permlink,
       blockNum,
+      deadline,
       ganadorAnunciado: ganadorAnunciado || null,
       ...resultado,
     });
@@ -208,7 +225,7 @@ async function handleVerificar(evento) {
 // Shared function: fetches the Hive data needed and computes the raffle.
 // Used by BOTH "Draw now" and "Verify", to guarantee both paths do
 // exactly the same thing.
-async function ejecutarSorteo(author, permlink, blockNum) {
+async function ejecutarSorteo(author, permlink, blockNum, deadline) {
   const [replies, block] = await Promise.all([
     getContentReplies(author, permlink),
     getBlock(blockNum),
@@ -218,7 +235,9 @@ async function ejecutarSorteo(author, permlink, blockNum) {
     throw new Error(t('errBlockNotExist', { blockNum }));
   }
 
-  return computeRaffle({ replies, block });
+  const validReplies = filterRepliesByDeadline(replies, deadline);
+
+  return computeRaffle({ replies: validReplies, block });
 }
 
 // ---------- Show results ----------
@@ -233,7 +252,7 @@ function mostrarResultado(elementId, datos) {
 }
 
 function pintarResultado(elementId, datos) {
-  const { author, permlink, blockNum, blockId, participantes, ganador, ganadorAnunciado } = datos;
+  const { author, permlink, blockNum, deadline, blockId, participantes, ganador, ganadorAnunciado } = datos;
 
   const contenedor = document.getElementById(elementId);
   contenedor.classList.remove('hidden');
@@ -246,10 +265,15 @@ function pintarResultado(elementId, datos) {
     comparacionHtml = `<p class="${clase}">${t(clave, { name: ganadorAnunciado })}</p>`;
   }
 
+  const deadlineHtml = deadline
+    ? `<p><strong>${t('resultDeadline')}</strong> ${deadline}</p>`
+    : '';
+
   contenedor.innerHTML = `
     <h3>${t('resultTitle')}</h3>
     <p><strong>${t('resultPost')}</strong> @${author}/${permlink}</p>
     <p><strong>${t('resultBlockUsed')}</strong> #${blockNum}</p>
+    ${deadlineHtml}
     <p><strong>${t('resultBlockId')}</strong> <code>${blockId}</code></p>
     <p><strong>${t('resultParticipants', { count: participantes.length })}</strong></p>
     <details>

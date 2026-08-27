@@ -27,6 +27,10 @@ export const translations = {
     btnSuggestBlock: 'Suggest future block',
     btnSuggestBlockLoading: 'Querying Hive...',
     labelBlockNum: 'Target block (you can edit it, but it must be in the future)',
+    labelDeadline: 'Entry deadline in UTC (optional)',
+    deadlineHelp:
+      'Comments posted after this UTC time won\'t count as entries. Leave it empty to count ' +
+      'every comment that exists at the moment you draw.',
     commitHelp:
       'Publish this text publicly (for example as a comment on your own post) ' +
       'before that block arrives, so everyone knows in advance which block will decide the raffle:',
@@ -56,10 +60,12 @@ export const translations = {
       'Raffle for @{author}/{permlink}\n' +
       'Will be resolved using Hive block #{blockNum}.\n' +
       'Verify it yourself at: hive-raffle ("Verify raffle" tab)',
+    commitDeadlineLine: 'Entries after {deadline} UTC will not count.',
 
     resultTitle: 'Result',
     resultPost: 'Post:',
     resultBlockUsed: 'Block used as seed:',
+    resultDeadline: 'Entry deadline (UTC):',
     resultBlockId: 'block_id:',
     resultParticipants: 'Participants ({count}):',
     resultSeeList: 'See full list',
@@ -96,6 +102,10 @@ export const translations = {
     btnSuggestBlock: 'Sugerir bloque futuro',
     btnSuggestBlockLoading: 'Consultando Hive...',
     labelBlockNum: 'Bloque objetivo (puedes editarlo, pero debe ser futuro)',
+    labelDeadline: 'Fecha límite de participación en UTC (opcional)',
+    deadlineHelp:
+      'Los comentarios publicados después de esta hora UTC no contarán como participaciones. ' +
+      'Déjalo en blanco para contar todos los comentarios que existan en el momento de sortear.',
     commitHelp:
       'Publica este texto públicamente (por ejemplo, como comentario en tu propio post) ' +
       'antes de que llegue ese bloque, para que todo el mundo sepa de antemano qué bloque decidirá el sorteo:',
@@ -125,10 +135,12 @@ export const translations = {
       'Sorteo de @{author}/{permlink}\n' +
       'Se resolverá usando el bloque de Hive #{blockNum}.\n' +
       'Verifícalo tú mismo en: hive-raffle (pestaña "Verificar sorteo")',
+    commitDeadlineLine: 'Los comentarios posteriores a {deadline} UTC no contarán.',
 
     resultTitle: 'Resultado',
     resultPost: 'Post:',
     resultBlockUsed: 'Bloque usado como semilla:',
+    resultDeadline: 'Fecha límite de participación (UTC):',
     resultBlockId: 'block_id:',
     resultParticipants: 'Participantes ({count}):',
     resultSeeList: 'Ver lista completa',
