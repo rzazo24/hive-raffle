@@ -1,5 +1,12 @@
 # hive-raffle
 
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Last Commit](https://img.shields.io/github/last-commit/rzazo24/hive-raffle)
+![Issues](https://img.shields.io/github/issues/rzazo24/hive-raffle)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)
+![Hive](https://img.shields.io/badge/blockchain-Hive-red)
+![Status](https://img.shields.io/badge/status-in%20development-yellow)
+
 Sorteos verificables usando la blockchain de Hive como fuente de aleatoriedad.
 
 En vez de confiar en un `Math.random()` que nadie puede comprobar, este
