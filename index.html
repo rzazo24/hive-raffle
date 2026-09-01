@@ -5,7 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hive Raffle — Verifiable raffles on Hive</title>
 
-  <!-- Mismas fuentes que hive-scope, para mantener la identidad visual -->
+  <!-- Favicon: same diamond mark as hive-scope, with the cyan die instead of
+       the magnifying glass, so the browser tab shows the raffle logo. Same
+       "inline base64 SVG" trick hive-scope uses, so there's no extra image
+       file to keep in sync. -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KICA8ZGVmcz4KICAgIDxzdHlsZT4KICAgICAgLm1hcmsgeyBmaWxsOiAjZTMxMzM3OyB9CiAgICAgIC5kaWUtcmluZyB7IGZpbGw6IG5vbmU7IHN0cm9rZTogIzM4YmRmODsgc3Ryb2tlLXdpZHRoOiA3OyB9CiAgICAgIC5kaWUtYmcgeyBmaWxsOiAjMDkwZDE2OyBvcGFjaXR5OiAwLjc7IH0KICAgICAgLmRpZS1kb3QgeyBmaWxsOiAjMzhiZGY4OyB9CiAgICA8L3N0eWxlPgogIDwvZGVmcz4KICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwLCA1KSBzY2FsZSgwLjQyKSI+CiAgICA8cGF0aCBjbGFzcz0ibWFyayIgZD0iTTE1Ny4yNywxMDcuMjZhMSwxLDAsMCwxLC44MiwxLjQybC00Ni43NSw4MC44NWExLDEsMCwwLDEtLjgyLjQ3SDgxLjk0YS45NC45NCwwLDAsMS0uODEtMS40Mmw0Ni43NS04MC44NWEuOTQuOTQsMCwwLDEsLjgxLS40N1pNMTI5LjQ4LDg0LjA5YTEsMSwwLDAsMS0uODItLjQ3TDgxLjEzLDEuNDJBLjk0Ljk0LDAsMCwxLDgxLjk0LDBoMjguNThhMSwxLDAsMCwxLC44Mi40N2w0Ny41Myw4Mi4yYS45NC45NCwwLDAsMS0uODEsMS40MloiLz4KICAgIDxwYXRoIGNsYXNzPSJtYXJrIiBkPSJNMTM1LjEzLDEuNDJBLjk0Ljk0LDAsMCwxLDEzNiwwaDI4LjYyYS45My45MywwLDAsMSwuODEuNDdsNTQuNDksOTQuMDZhLjkzLjkzLDAsMCwxLDAsLjk0bC01NC40OSw5NC4wNmEuOTMuOTMsMCwwLDEtLjgxLjQ3SDEzNmEuOTQuOTQsMCwwLDEtLjgyLTEuNDJMMTg5LjM0LDk1Wm0tMjMuMjYsOTMuMWExLDEsMCwwLDEsMCwxTDU3LjEzLDE4OS41M2ExLDEsMCwwLDEtMS42NSwwTC4xMyw5NS40OGExLDEsMCwwLDEsMC0xTDU0Ljg3LjQ3YTEsMSwwLDAsMSwxLjY1LDBaIi8+CiAgPC9nPgogIDxnPgogICAgPHJlY3QgY2xhc3M9ImRpZS1iZyIgeD0iNDYiIHk9IjQyIiB3aWR0aD0iNDQiIGhlaWdodD0iNDQiIHJ4PSIxMCIvPgogICAgPHJlY3QgY2xhc3M9ImRpZS1yaW5nIiB4PSI0NiIgeT0iNDIiIHdpZHRoPSI0NCIgaGVpZ2h0PSI0NCIgcng9IjEwIi8+CiAgICA8Y2lyY2xlIGNsYXNzPSJkaWUtZG90IiBjeD0iNTgiIGN5PSI1NCIgcj0iNC4zIi8+CiAgICA8Y2lyY2xlIGNsYXNzPSJkaWUtZG90IiBjeD0iNzgiIGN5PSI1NCIgcj0iNC4zIi8+CiAgICA8Y2lyY2xlIGNsYXNzPSJkaWUtZG90IiBjeD0iNjgiIGN5PSI2NCIgcj0iNC4zIi8+CiAgICA8Y2lyY2xlIGNsYXNzPSJkaWUtZG90IiBjeD0iNTgiIGN5PSI3NCIgcj0iNC4zIi8+CiAgICA8Y2lyY2xlIGNsYXNzPSJkaWUtZG90IiBjeD0iNzgiIGN5PSI3NCIgcj0iNC4zIi8+CiAgPC9nPgo8L3N2Zz4K" />
+
+  <!-- Same fonts as hive-scope, to keep a consistent visual identity -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
