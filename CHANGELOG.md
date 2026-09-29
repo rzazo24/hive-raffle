@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.5.0] - 2026-09-29
+
+### Changed
+- Scrollbars restyled to match the site design (thin, red-to-cyan gradient thumb, same as hive-scope).
+
 ## [0.4.0] - 2026-09-02
 
 ### Added
