@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.5.1] - 2026-10-05
+
+### Changed
+- CLAUDE.md is now tracked in the repo (removed it and the now-empty `.gitignore` from the ignore setup).
+
+### Docs
+- Updated the repository notes in CLAUDE.md (repo is private).
+
 ## [0.5.0] - 2026-09-29
 
 ### Changed
